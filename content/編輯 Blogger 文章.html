@@ -154,19 +154,65 @@ img.add_border {
           </div>
           
         </header>
-    <div id="tipue_search_content">w6-9 << <a href='w6-9.html'>Previous</a> <a href='w14.html'>Next</a> >> w14<br /><h1>w12-13</h1>
-<ul style="list-style-type: square;">
-<li><span>安裝 </span><span>google-api-python-client 與 oauth2client</span></li>
-<li>
-<p>完成 client_secrets.json 設定後, 必須將檔案存在倉儲目錄外部</p>
-<p>將 client_secrets.json 轉為 credential_token.dat 的程式</p>
-</li>
-<li>學會用leo</li>
-<li>設定 <span>add_to_blogger 和 edit_to_blogger 按鈕</span><span></span></li>
-<li><span>使用Google Blogger</span></li>
-<li><span>Google Blogger 中的網誌系統都有獨立 ID, 稱為 blog_id, 而網誌中的每一篇文章也有獨立 ID, </span><span>稱為 post_id</span><span></span></li>
-</ul>
-<br />w6-9 << <a href='w6-9.html'>Previous</a> <a href='w14.html'>Next</a> >> w14</div>
+    <div id="tipue_search_content">新增 blogger 文章 << <a href='新增 blogger 文章.html'>Previous</a> <br /><h1>編輯 Blogger 文章</h1>
+<h4>w14_blogger_edit_1.py</h4>
+<pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false">'''
+用來測試 Google Blogger Python API 編輯文章程式
+ 
+pip install google-api-python-client oauth2client
+ 
+'''
+ 
+import sys
+from oauth2client import client
+from googleapiclient import sample_tools
+ 
+argv = ""
+# 認證並建立服務
+service, flags = sample_tools.init(
+  argv, 'blogger', 'v3', __doc__, './client_secrets.json',
+  scope='https://www.googleapis.com/auth/blogger')
+ 
+try:
+    users = service.users()
+    # 取得使用者 profile 資料
+    user = users.get(userId='self').execute()
+    print('網誌名稱: %s' % user['displayName'])
+    blogs = service.blogs()
+    # 取得使用者所建立網誌名稱
+    blogs = blogs.listByUser(userId='self').execute()
+    for blog in blogs['items']:
+        print(blog['name'], blog['url'])
+    posts = service.posts()
+    # 新增網誌 post 時, 需要 blog id
+ 
+    '''
+    body = {
+    "kind": "blogger#post",
+    "id": "123",
+    "title": "透過 Python 程式新增網誌文章1",
+    "content":"使用 Google Blogger API 可以利用程式新增網誌文章內容1"
+    }
+     
+    insert = posts.insert(blogId='123', body=body)
+    posts_doc = insert.execute()
+    print(posts_doc)
+    '''
+ 
+    # 更新網誌文章時的 body
+    body = {
+    "kind": "blogger#post",
+    "title": "透過 Python 程式修改網誌文章2",
+    "content": "使用 Google Blogger API 可以利用程式修改網誌文章內容. http://mde.tw/cd2019"
+    }
+     
+    update = posts.update(blogId="123", postId="456", body=body, publish=True)
+    update_doc = update.execute()
+    print(update_doc)
+ 
+except(client.AccessTokenRefreshError):
+    print("error")</pre>
+<div class="line number1 index0 alt2"><code class="py comments"></code></div><br />新增 blogger 文章 << <a href='新增 blogger 文章.html'>Previous</a> </div>
         
     <!-- footer -->
       <div class="container">
